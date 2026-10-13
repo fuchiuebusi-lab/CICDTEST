@@ -8,4 +8,4 @@ phases:
       - env | cut -d= -f1 | sort
       - git push origin HEAD:refs/heads/verify/push-test && echo "PUSH OK" || echo "PUSH NG"
       - aws codeconnections help 2>&1 | head -50 || true
-      - aws codeconnections help | col -b | grep -i token || echo "no token command
+      - aws codeconnections help | col -b | grep -i token || echo "no token command"
