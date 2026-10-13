@@ -1,0 +1,6 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - echo "stage dummy (${CODEBUILD_BUILD_ID})"
+      - exit ${EXIT_CODE:-0}
