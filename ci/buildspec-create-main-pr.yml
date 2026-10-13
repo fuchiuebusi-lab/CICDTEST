@@ -20,7 +20,10 @@ phases:
 
         # GitHub Appのインストールトークンを取得（JWTをRS256で署名）
         b64url () { openssl base64 -A | tr '+/' '-_' | tr -d '='; }
-        printf '%s\n' "$GH_APP_PRIVATE_KEY" > app-key.pem
+        # Secrets Managerへの登録で改行が空白や「\n」の文字に変わっていても読めるよう、PEMを組み立て直す
+        KEY_TYPE=$(printf '%s' "$GH_APP_PRIVATE_KEY" | sed -n 's/.*-----BEGIN \([A-Z ]*\)-----.*/\1/p' | head -1)
+        KEY_BODY=$(printf '%s' "$GH_APP_PRIVATE_KEY" | sed 's/\\n/ /g' | tr '\n' ' ' | sed 's/-----[A-Z ]*-----//g' | tr -d ' \r\t')
+        { echo "-----BEGIN $KEY_TYPE-----"; echo "$KEY_BODY" | fold -w 64; echo "-----END $KEY_TYPE-----"; } > app-key.pem
         NOW=$(date +%s)
         HEADER=$(printf '{"alg":"RS256","typ":"JWT"}' | b64url)
         PAYLOAD=$(printf '{"iat":%d,"exp":%d,"iss":"%s"}' $((NOW - 60)) $((NOW + 540)) "$GH_APP_ID" | b64url)
