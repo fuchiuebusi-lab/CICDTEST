@@ -1,0 +1,6 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - echo "verify ci (${CODEBUILD_BUILD_ID})"
+      - if [ "${FAIL:-0}" = "1" ]; then echo "intentional failure"; exit 1; fi
