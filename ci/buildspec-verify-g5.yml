@@ -1,0 +1,10 @@
+version: 0.2
+phases:
+  build:
+    commands:
+      - git remote -v || true
+      # 認証情報の値は出さず、設定のキー名だけを表示する
+      - git config --list --show-origin | sed -E 's/(=).*/\1***/' || true
+      - env | cut -d= -f1 | sort
+      - git push origin HEAD:refs/heads/verify/push-test && echo "PUSH OK" || echo "PUSH NG"
+      - aws codeconnections help 2>&1 | head -50 || true
